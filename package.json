@@ -1,0 +1,21 @@
+{
+  "name": "prettyDocsUi",
+  "version": "0.0.1",
+  "description": "UI for displaying docs created with docco better",
+  "main": "index.js",
+  "dependencies": {
+    "bower": "^1.3.2"
+  },
+  "devDependencies": {
+    "bower": "^1.3.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rdossantos/prettyDocsUi.git"
+  },
+  "author": "Rico dos Santos",
+  "license": "MIT"
+}
