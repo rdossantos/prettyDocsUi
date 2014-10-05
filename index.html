@@ -1,42 +1,52 @@
 <html ng-app="prettyDocsUi">
 <head>
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/angular-resource/angular-resource.js"></script>
-<script src="bower_components/angular-route/angular-route.js"></script>
+<base href="/" /> 
+<script src="/bower_components/angular/angular.js"></script>
+<script src="/bower_components/angular-resource/angular-resource.js"></script>
+<script src="/bower_components/angular-route/angular-route.js"></script>
+<script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script>
-var module = angular.module('prettyDocsUi', ['ngResource', 'ngRoute']);
+var module = angular.module('prettyDocsUi', ['ngResource', 'ngRoute', 'ngSanitize']);
     module.factory('FunctionDetail', ['$resource',
         function($resource) {
+	    console.log('returning resource');
             return $resource('/rest/api/:functionType/:functionName');
         }
     ]);
 
     module.controller('testControl', ['$scope', '$routeParams', 'FunctionDetail', function($scope, $routeParams, FunctionDetail){
-       
-             
-            $scope = $scope;
-	    if($routeParams.functionType && $routeParams.functionName){   
-              FunctionDetail
-                  .get({functionType: $routeParams.functionType, functionName: $routeParams.functionName})
-                  .$promise.then(function(data){
-                      $scope.aliases = data.aliases;
-                      $scope.name = data.name;
-                      $scope.exampleText = data.exampleText;
-                  });
-              };
-	    
+      if($routeParams.functionType && $routeParams.functionName){   
+        FunctionDetail
+            .get({functionType: $routeParams.functionType, functionName: $routeParams.functionName})
+            .$promise.then(function(data){
+		console.log('in promise success');
+                $scope.aliases = data.aliases;
+                $scope.name = data.name;
+                $scope.exampleText = data.exampleText;
+                $scope.description = data.description;
+            });
+        };
     }]);
-    module.config(['$routeProvider', function($routeProvider){
-        $routeProvider.when('/rest/api/:functionType/:functionName', {
+
+    module.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
+        $routeProvider.when('/underscore/:functionType/:functionName', {
             controller: 'testControl',
-	    templateUrl: 'template/test.html'
+            templateUrl: function(){console.log('thing1');return './template/test.html';}
+        }).when('/underscore/:functionType', {
+            templateUrl: function(params){ 
+              console.log('thing2%%%%%%%%%%%%%', './template/', params.functionType, '.html');
+              return 'template/' + params.functionType +'.html';
+            }
+        }).when('/underscore', {
+            templateUrl: function(){console.log('thing3');return './template/groups.html'}
         });
+
+        $locationProvider.html5Mode(true);
     }]);
 </script>
 </head>
 <body>
-<h1>Hello {{thing}}</h1>
-<input type="text" ng-model="thing" />
+<a href="/underscore">underscore</a>
 <div ng-view>love me</div>
 </body>
 </html>
